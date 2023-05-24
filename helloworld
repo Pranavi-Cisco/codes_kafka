@@ -1,0 +1,3 @@
+from confluent_kafka import Consumer,KafkaException
+import pandas as pd
+print('hello world")
