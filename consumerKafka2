@@ -1,0 +1,52 @@
+from kafka import KafkaConsumer, TopicPartition
+from confluent_kafka import Consumer,KafkaException
+from json import loads
+import json
+import pandas as pd
+conf = {
+    'bootstrap.servers': 'localhost:9092',
+    'group.id' : '1',
+    'auto.offset.reset':'earliest',
+    'enable.auto.commit':'false'
+
+}
+def consume_messages():
+    consumer = Consumer(conf)
+    consumer.subscribe(['topic1'])
+    global message_list
+    message_list = []
+    try:
+        while True:
+            message_dict = {}
+            msg = consumer.poll(1.0)
+            if msg is None:
+                print('None')
+                continue
+            if msg.error():
+                print ("Consumer error: {}".format(msg.error()))
+                if msg.error().code() == KafkaException_PARTITION_EOF:
+                    print ("End of topic reached")
+                    continue
+                else:
+                    print(f'Kafka error:{msg.error()}')
+                    break
+
+            print('Received message:{msg.value().decode("utf-8")}')
+            value=msg.value().decode('utf-8')
+            message_dict['value']=value
+            message_list.append(message_dict)
+
+
+            print(value)
+            consumer.commit(asynchronous=False)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        consumer.close()
+
+    
+consume_messages()
+
+df = pd.DataFrame(message_list)
+print(df)
+df.to_csv('C:/Kafka_setup/data/temp_files/test.csv')
