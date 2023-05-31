@@ -1,0 +1,26 @@
+from kafka import KafkaConsumer, TopicPartition
+from json import loads
+import json
+import pandas as pd
+
+consumer = KafkaConsumer('test-topic', bootstrap_servers=['localhost:9092'], api_version=(0,10),auto_offset_reset='earliest',enable_auto_commit=False,consumer_timeout_ms=1000)
+message_list = []
+loop=0
+for message in consumer:
+#     consumer.commit()
+    try:
+        print(loop)
+        loop = loop+1
+        
+        message_dict = {}
+        message_dict['S.No'] = loop
+        message_dict['Message'] = message.value
+        message_list.append(message_dict)
+        print(message.value)
+        print('end of iter')
+    except exception as e:
+        print(e)
+print('end of loop')
+consumer.close()
+
+print(message_list)
