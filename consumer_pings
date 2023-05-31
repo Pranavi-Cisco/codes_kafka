@@ -2,6 +2,7 @@ from kafka import KafkaConsumer, TopicPartition
 from json import loads
 import json
 import pandas as pd
+import os,sys
 
 consumer = KafkaConsumer('test-topic', bootstrap_servers=['localhost:9092'], api_version=(0,10),auto_offset_reset='earliest',enable_auto_commit=False,consumer_timeout_ms=1000)
 message_list = []
@@ -24,3 +25,12 @@ print('end of loop')
 consumer.close()
 
 print(message_list)
+
+if getattr(sys, 'frozen', False):
+	datadir = os.path.dirname(sys.executable)
+else:
+	datadir = os.path.dirname(__file__)
+
+df = pd.DataFrame(message_list)
+file_name = os.path.join(datadir,'Messages_Kafka.xlsx')
+df.to_excel(file_name ,index=False)
