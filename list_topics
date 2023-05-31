@@ -1,0 +1,3 @@
+import kafka
+admin_client = kafka.KafkaAdminClient(bootstrap_servers=['server'])
+admin_client.list_topics()
