@@ -1,0 +1,13 @@
+from kafka import KafkaProducer
+from time import sleep
+import json
+from datetime import datetime
+
+producer = KafkaProducer(bootstrap_servers=['localhost:9092'],api_version=(0,10,1))
+producer.send('test-topic', b'kafka test from python')
+
+for i in range(1,5):
+    message = "Testing Messaging {}".format(str(datetime.now().time()))
+    producer.send('test-topic', json.dumps(message).encode("utf-8"))
+    sleep(4)
+    print('message sent', i)
