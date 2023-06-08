@@ -1,0 +1,5 @@
+import re
+pattern = r'(\d{2}:\d{2}:\d{2}\.\d{6})'
+matches = re.findall(pattern, str_here)  #replace str_here with data1 variable
+timestamp_str = matches[0] 
+# timestamp_str to be replaced with our static values while inserting
